@@ -1,0 +1,68 @@
+{
+  "name": "vsc-vndb",
+  "displayName": "Vndb in VS Code",
+  "description": "上班摸鱼用插件, 偷偷看黄油最新资讯",
+  "repository": "https://github.com/TachibanaKimika/vsc-vndb",
+  "version": "0.2.0",
+  "publisher": "TachibanaKimika",
+  "preview": false,
+  "private": true,
+  "engines": {
+    "vscode": "^1.69.0"
+  },
+  "icon": "nozomi.png",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "keywords": [
+    "erogame",
+    "visual novel",
+    "anime"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack  --mode development",
+    "watch": "cross-env NODE_ENV=dev webpack --watch",
+    "package": "cross-env NODE_ENV=prod webpack --mode production --devtool hidden-source-map --config webpack.config.ts",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/lodash": "^4.14.182",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.69.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "@vscode/test-electron": "^2.1.5",
+    "@vscode/webview-ui-toolkit": "^1.0.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "^6.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "prettier": "^2.7.1",
+    "ts-loader": "^9.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "dayjs": "^1.11.3",
+    "lodash": "^4.17.21",
+    "vndb-api": "^1.0.3"
+  }
+}

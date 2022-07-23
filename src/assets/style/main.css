@@ -1,0 +1,184 @@
+/** common style */
+#vsc-vndb-view-panel {
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  padding: 16px 0;
+}
+
+#vsc-vndb-view-panel .vn-header-btns {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+}
+
+
+.vn-link {
+  color: var(--vscode-editor-font-size);
+  font-weight: 700;
+}
+
+.vndb-spoiler {
+  background-color: #000;
+  color: #000 !important;
+  margin: 0 2px;
+}
+
+.vndb-spoiler:hover {
+  color: #ddd !important;
+}
+
+/** header */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+/** vn list */
+.vn-block-wrap {
+  display: grid;
+  flex-wrap: wrap;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  justify-content: space-between;
+  gap: 10px;
+  overflow: auto;
+}
+
+.vn-block {
+  min-width: 200px;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vn-title-block {
+  width: 100%;
+}
+
+.vn-title-block-title {
+  font-size: calc(var(--vscode-editor-font-size) + 2px);
+  color: var(--vscode-editor-foreground);
+  font-weight: 700;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vn-title-block-original {
+  margin-top: 8px;
+  font-size: var(--vscode-editor-font-size);
+  font-weight: 350;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vn-list-details {
+  display: flex;
+  font-size: calc(var(--vscode-editor-font-size) - 2px);
+  gap: 4px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.vn-list-details-popularity, .vn-list-details-rating, .vn-list-details-votecount {
+  flex: 1;
+}
+
+.vn-list-details-bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+.vn-list-details-bottom .btn {
+  margin-left: auto;
+}
+
+.vn-loadmore-btn {
+  margin-top: 25px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.loading-full-height {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/** vn details */
+.details-main {
+  /* margin-top: 10px; */
+}
+
+.details-main .details-title {
+  font-size: calc(var(--vscode-editor-font-size) + 5px);
+  font-weight: 700;
+}
+
+.details-main .details-original {
+  font-size: calc(var(--vscode-editor-font-size) + 2px);
+  font-weight: 350;
+}
+
+.details-main .details-stats {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.details-main .details-stats>div {
+  flex: 1;
+  min-width: 150px;
+}
+
+.details-main .label {
+  color: var(--vscode-symbolIcon-keywordForeground);
+  font-weight: 700;
+}
+
+.details-main .value {
+  color: var(--vscode-editor-foreground);
+  font-weight: 350;
+}
+
+/** vn details character */
+.details-main .details-character {
+  margin-top: 18px;
+}
+
+.details-main .details-character .character-name {
+  display: flex;
+  align-items: center;
+  font-size: calc(var(--vscode-editor-font-size) + 2px);
+  font-weight: 700;
+}
+
+.details-main .details-character .character-name .character-role-tag  {
+  display: block;
+  margin-left: 8px;
+  font-size: calc(var(--vscode-editor-font-size) - 2px);
+  font-weight: 350;
+}
+
+.details-main .details-character .character-name .character-gender-icon {
+  margin-left: 8px;
+}
+
+.details-main .details-character .character-basic {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.details-main .details-character .character-description {
+  margin-top: 8px;
+}

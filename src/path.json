@@ -1,0 +1,5 @@
+{
+  "css": ["src", "assets", "style", "main.css"],
+  "js": ["src", "assets", "main.js"],
+  "ui_toolkit": ["node_modules", "@vscode", "webview-ui-toolkit", "dist", "toolkit.min.js"]
+}
