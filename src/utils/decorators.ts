@@ -35,10 +35,31 @@ export const loading = (
       return null;
     } else {
       this._isInQuery = true;
-      const result = await original.apply(this, args);
-      this._isInQuery = false;
-      return result;
+      let result;
+      try {
+        result = await original.apply(this, args);
+      } catch (e) {
+        vscode.window.showErrorMessage('Query Error');
+      } finally {
+        this._isInQuery = false;
+        return result;
+      }
     }
+  };
+  return descriptor;
+};
+
+export const reconnect = (
+  target: any,
+  key: string,
+  descriptor: PropertyDescriptor
+) => {
+  const original = descriptor.value;
+  descriptor.value = async function (...args: any[]) {
+    if (this._vndb) {
+      this._vndb.destroy();
+    }
+    return await original.apply(this, args);
   };
   return descriptor;
 };

@@ -57,11 +57,17 @@ export function activate(context: vscode.ExtensionContext) {
     });
   };
 
+  const reconnect = () => {
+    const panel: VnListViewPanel = getConfig('vnListViewPanel');
+    panel.reconnectDb();
+  };
+
   regisrtyCommand('showDailyHotListPanel', showDailyHotListPanel);
   regisrtyCommand('showMonthlyHotListPanel', showMonthlyHotListPanel);
   regisrtyCommand('showYearlyHotListPannel', showYearlyHotListPannel);
   regisrtyCommand('getDetailsById', getDetailsById);
   regisrtyCommand('searchVnsByQuery', searchVns);
+  regisrtyCommand('reconnect', reconnect);
 }
 
 // this method is called when your extension is deactivated

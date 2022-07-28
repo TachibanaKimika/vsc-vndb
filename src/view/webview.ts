@@ -37,6 +37,7 @@ export class ViewPanel {
   protected _loadMore() {}
 
   private createWebviewPanel(onDidDispose: () => void) {
+    vnQuery.reconnect();
     const context = getContext();
     const panel = vscode.window.createWebviewPanel(
       'vsc-vndb-view-panel',
@@ -45,9 +46,7 @@ export class ViewPanel {
       {
         enableScripts: true,
         retainContextWhenHidden: true,
-        localResourceRoots: [
-          vscode.Uri.joinPath(context.extensionUri),
-        ],
+        localResourceRoots: [vscode.Uri.joinPath(context.extensionUri)],
       }
     );
     panel.webview.onDidReceiveMessage(
@@ -162,6 +161,10 @@ export class VnListViewPanel extends ViewPanel {
   private _query: any;
   private _hasMore: string | null = null;
   // private scence: string;
+
+  public reconnectDb() {
+    vnQuery.reconnect();
+  }
 
   private async _renderVns(vns: VnListItem[], more = false) {
     this._vns = vns;

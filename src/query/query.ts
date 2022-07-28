@@ -269,7 +269,7 @@ class VnQuery {
         vnsRes.more ?? true
       );
     } else {
-      return null;
+      throw new Error('vndb search error');
     }
   }
 
