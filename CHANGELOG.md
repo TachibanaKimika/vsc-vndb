@@ -14,6 +14,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 support for keyword search and sort
 
-### 0.2.1
+### 0.2.2
 
 fix query loading state
