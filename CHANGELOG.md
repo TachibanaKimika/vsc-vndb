@@ -13,3 +13,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### 0.2.0
 
 support for keyword search and sort
+
+### 0.2.1
+
+fix query loading state

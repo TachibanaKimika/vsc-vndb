@@ -1,9 +1,9 @@
 {
   "name": "vsc-vndb",
   "displayName": "Vndb in VS Code",
-  "description": "上班摸鱼用插件, 偷偷看黄油最新资讯",
+  "description": "View vndb in VS Code",
   "repository": "https://github.com/TachibanaKimika/vsc-vndb",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "TachibanaKimika",
   "preview": false,
   "private": true,
