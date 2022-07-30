@@ -4,7 +4,7 @@
 
 ## Quick Start
 
-左下角的`status bar`会显示今日发售的黄油, 点击即可进入主面板, 傻瓜式操作没有学习成本.
+右下角的`status bar`会显示今日发售的黄油, 点击即可进入主面板, 傻瓜式操作没有学习成本.
 
 ![image](https://raw.githubusercontent.com/TachibanaKimika/vsc-vndb/master/images/main_panel.png)
 
