@@ -7,6 +7,8 @@ import { setContext, setConfig, getConfig } from './utils/context';
 import { StatusBar } from './view/statusBar';
 import { SortType } from './query/query';
 import { VnListViewPanel } from './view/webview';
+import { authBangumi } from './utils/bgm';
+import initService from './service';
 
 let isInit = false;
 
@@ -15,6 +17,7 @@ const initialize = (context: vscode.ExtensionContext) => {
     return;
   }
   isInit = true;
+  initService();
   setContext(context);
   const vnListViewPanel = new VnListViewPanel();
   const statusBar = new StatusBar();
@@ -57,6 +60,10 @@ export function activate(context: vscode.ExtensionContext) {
     });
   };
 
+  const authBangumiExec = () => {
+    authBangumi();
+  };
+
   const reconnect = () => {
     const panel: VnListViewPanel = getConfig('vnListViewPanel');
     panel.reconnectDb();
@@ -67,6 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
   regisrtyCommand('showYearlyHotListPannel', showYearlyHotListPannel);
   regisrtyCommand('getDetailsById', getDetailsById);
   regisrtyCommand('searchVnsByQuery', searchVns);
+  regisrtyCommand('authBangumi', authBangumiExec);
   regisrtyCommand('reconnect', reconnect);
 }
 

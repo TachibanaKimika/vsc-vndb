@@ -7,6 +7,7 @@ import { vnQuery, SearchOption } from '../query/query';
 import { formatDetails, searchBar } from '../utils/formatHtml';
 import { NodeModulesAccessor, NodeModulesKeys } from '../NodeModulesAccessor';
 import { formatNumber } from '../utils/string';
+import Logger from '../utils/logger';
 
 export class ViewPanel {
   private _extensionUri: vscode.Uri;
@@ -242,7 +243,7 @@ export class VnListViewPanel extends ViewPanel {
         }
       })
       .catch((err) => {
-        console.warn('vndb get hot vns error', err);
+        Logger.error('vndb get hot vns error', err);
         this.updateContent('Fetch Data Error');
       });
   }
@@ -257,7 +258,7 @@ export class VnListViewPanel extends ViewPanel {
         }
       })
       .catch((err) => {
-        console.warn('vndb get hot vns error', err);
+        Logger.error('vndb get hot vns error', err);
         this.updateContent('Fetch Data Error');
       });
   }
@@ -272,7 +273,7 @@ export class VnListViewPanel extends ViewPanel {
         }
       })
       .catch((err) => {
-        console.warn('vndb get hot vns error', err);
+        Logger.error('vndb get hot vns error', err);
         this.updateContent('Fetch Data Error');
       });
   }
@@ -284,7 +285,7 @@ export class VnListViewPanel extends ViewPanel {
 
   public loadMoreVns() {
     vnQuery.loadMore().then((res) => {
-      console.log(res);
+      Logger.log(res);
       if (!res) {
         return;
       }
@@ -303,7 +304,7 @@ export class VnListViewPanel extends ViewPanel {
         }
       })
       .catch((err) => {
-        console.warn('vndb query vns error', err);
+        Logger.error('vndb query vns error', err);
         this.updateContent('Fetch Data Error');
       });
   }

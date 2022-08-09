@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { VnsQueryRes, VnListItem, Vn, Character } from './interface';
 import { capitalizeFirstLetter } from '../utils/string';
 import { logger, loading } from '../utils/decorators';
+import Logger from '../utils/logger';
 import { get, set } from 'lodash';
 
 type IVndb = any;
@@ -258,7 +259,7 @@ class VnQuery {
       ...option,
     };
 
-    console.log('vndb search TYPE && CACHE', this._type, this._cache);
+    Logger.log('vndb search TYPE && CACHE', this._type, this._cache);
     const vnsRes: VnsQueryRes<VnListItem> = await this._vndb.query(
       `get vn basic,stats (search~"${keyword}") ${JSON.stringify(options)}`
     );
@@ -277,7 +278,7 @@ class VnQuery {
    * @description loadmore
    */
   public async loadMore(): Promise<GetVnRes | null> {
-    console.log('vndb loadmore', this);
+    Logger.log('vndb loadmore', this);
     if (!this._type) {
       vscode.window.showErrorMessage('Please select a query type first.');
       return null;

@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
-
+import Logger from './logger';
 export const logger = (
   target: any,
   key: string,
   descriptor: PropertyDescriptor
 ) => {
-  console.log('vndb start logger');
+  Logger.log('vndb start logger');
   const original = descriptor.value;
   descriptor.value = async function (...args: any[]) {
-    console.log(
+    Logger.log(
       `VNDB LOGGER Calling ${key} with`,
       args,
       descriptor,
@@ -16,7 +16,7 @@ export const logger = (
       this
     );
     const result = await original.apply(this, args);
-    console.log('vndb end Loading');
+    Logger.log('vndb end Loading');
     return result;
   };
   return descriptor;

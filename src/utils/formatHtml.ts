@@ -1,5 +1,5 @@
 import { Vn, Character } from '../query/interface';
-
+import Logger from './logger';
 import * as Icon from './icons';
 
 const formatDescription = (desc: string | null) => {
@@ -9,7 +9,7 @@ const formatDescription = (desc: string | null) => {
 
   // replace url
   const [...matchedArray] = desc?.matchAll(/\[url=(.+?)\](.+?)\[\/url\]/gi);
-  console.log('vndb match', matchedArray);
+  Logger.log('vndb match', matchedArray);
   if (matchedArray) {
     for (const [replace, url, text] of matchedArray) {
       let url2Replace = url;
@@ -92,7 +92,7 @@ const genderIcon = {
 };
 
 export const formatCharacter = (c: Character): string => {
-  console.log('vndb c', c);
+  Logger.log('vndb c', c);
   const characterMeansBlock =
     ((c.bust &&
       c.waist &&

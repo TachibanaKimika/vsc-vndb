@@ -20,3 +20,9 @@ export const setConfig = (k: string, v: any) => {
 export const getConfig = (k: string) => {
   return _config[k];
 };
+
+export const saveState = (k: string, v: any) => {
+  _context.globalState.update(k, v);
+}
+
+export const loadState = (k: string) => _context.globalState.get(k);
