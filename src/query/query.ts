@@ -310,12 +310,14 @@ class VnQuery {
   }
 
   public async reconnect() {
+    this._isInQuery = false;
     if (!this._vndb) {
       this._vndb = getVndb();
     }
   }
 
   public destroy() {
+    this._isInQuery = false;
     this._vndb.destroy();
   }
 }

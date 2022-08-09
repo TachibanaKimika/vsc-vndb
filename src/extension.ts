@@ -6,8 +6,9 @@ import { regisrtyCommand } from './utils/command';
 import { setContext, setConfig, getConfig } from './utils/context';
 import { StatusBar } from './view/statusBar';
 import { SortType } from './query/query';
-import { VnListViewPanel } from './view/webview';
+import { VnListViewPanel, BgmViewPanel } from './view/webview';
 import { authBangumi } from './utils/bgm';
+import { getMyCollection } from './query/bgm';
 import initService from './service';
 
 let isInit = false;
@@ -20,9 +21,11 @@ const initialize = (context: vscode.ExtensionContext) => {
   initService();
   setContext(context);
   const vnListViewPanel = new VnListViewPanel();
+  const bgmViewPanel = new BgmViewPanel();
   const statusBar = new StatusBar();
   setConfig('statusBar', statusBar);
   setConfig('vnListViewPanel', vnListViewPanel);
+  setConfig('bgmViewPanel', bgmViewPanel);
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -69,6 +72,10 @@ export function activate(context: vscode.ExtensionContext) {
     panel.reconnectDb();
   };
 
+  const testExec = () => {
+    getMyCollection();
+  };
+
   regisrtyCommand('showDailyHotListPanel', showDailyHotListPanel);
   regisrtyCommand('showMonthlyHotListPanel', showMonthlyHotListPanel);
   regisrtyCommand('showYearlyHotListPannel', showYearlyHotListPannel);
@@ -76,6 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
   regisrtyCommand('searchVnsByQuery', searchVns);
   regisrtyCommand('authBangumi', authBangumiExec);
   regisrtyCommand('reconnect', reconnect);
+  regisrtyCommand('test', testExec);
 }
 
 // this method is called when your extension is deactivated

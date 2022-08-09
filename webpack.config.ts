@@ -28,6 +28,9 @@ const extensionConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
+    alias: {
+      '~': path.resolve(__dirname, 'src/'),
+    },
     extensions: ['.ts', '.js'],
   },
   module: {
@@ -51,8 +54,8 @@ const extensionConfig = {
 };
 
 function copyNodeModulesFiles() {
-  console.log('=====================env=====================');
-  console.log(process.env.NODE_ENV);
+  // console.log('=====================env=====================');
+  // console.log(process.env.NODE_ENV);
   const files = Object.keys(NodeModulesKeys)
     .filter((key) => !isNaN(Number(key)))
     .map((key) => Number(key));

@@ -10,12 +10,12 @@ import { formatNumber } from '../utils/string';
 import Logger from '../utils/logger';
 
 export class ViewPanel {
-  private _extensionUri: vscode.Uri;
-  private _content: string;
-  private _stylesUri: vscode.Uri;
-  private _scriptUri: vscode.Uri;
-  private _uiToolkitUri: vscode.Uri;
-  private _panel: vscode.WebviewPanel | undefined;
+  protected _extensionUri: vscode.Uri;
+  protected _content: string;
+  protected _stylesUri: vscode.Uri;
+  protected _scriptUri: vscode.Uri;
+  protected _uiToolkitUri: vscode.Uri;
+  protected _panel: vscode.WebviewPanel | undefined;
 
   constructor() {
     this._extensionUri = getContext().extensionUri;
@@ -37,8 +37,7 @@ export class ViewPanel {
 
   protected _loadMore() {}
 
-  private createWebviewPanel(onDidDispose: () => void) {
-    vnQuery.reconnect();
+  protected createWebviewPanel(onDidDispose: () => void) {
     const context = getContext();
     const panel = vscode.window.createWebviewPanel(
       'vsc-vndb-view-panel',
@@ -49,47 +48,6 @@ export class ViewPanel {
         retainContextWhenHidden: true,
         localResourceRoots: [vscode.Uri.joinPath(context.extensionUri)],
       }
-    );
-    panel.webview.onDidReceiveMessage(
-      (message) => {
-        switch (message.command) {
-          case 'getYear': {
-            executeCommand('showYearlyHotListPannel');
-            break;
-          }
-          case 'getMonth': {
-            executeCommand('showMonthlyHotListPanel');
-            break;
-          }
-          case 'getDay': {
-            executeCommand('showDailyHotListPanel');
-            break;
-          }
-          case 'loadMore': {
-            this._loadMore();
-            break;
-          }
-          case 'details': {
-            executeCommand('getDetailsById', message.id);
-            break;
-          }
-          case 'search': {
-            executeCommand(
-              'searchVnsByQuery',
-              message.keyword,
-              message.sort,
-              message.reverse
-            );
-            break;
-          }
-          case 'showError': {
-            vscode.window.showErrorMessage(message.error);
-            break;
-          }
-        }
-      },
-      undefined,
-      context.subscriptions
     );
     panel.onDidDispose(onDidDispose, null, context.subscriptions);
     return panel;
@@ -107,7 +65,7 @@ export class ViewPanel {
     }
   }
 
-  private _htmlWrap = (content: string) => {
+  protected _htmlWrap = (content: string) => {
     return `<!DOCTYPE html>
       <html lang="en">
         <head>
@@ -120,11 +78,6 @@ export class ViewPanel {
         </head>
         <body>
           <div id="vsc-vndb-view-panel">
-            <div class="vn-header-btns">
-              <vscode-button onclick="getDailyVns()">Daily View</vscode-button>
-              <vscode-button onclick="getMonthlyVns()">Monthly View</vscode-button>
-              <vscode-button onclick="getYearlyVns()">Yearly View</vscode-button>
-            </div>
             ${searchBar}
             ${content}
           </div>
@@ -162,6 +115,82 @@ export class VnListViewPanel extends ViewPanel {
   private _query: any;
   private _hasMore: string | null = null;
   // private scence: string;
+
+  protected createWebviewPanel(onDidDispose: () => void) {
+    vnQuery.reconnect();
+    const context = getContext();
+    const panel = super.createWebviewPanel(onDidDispose);
+    panel.webview.onDidReceiveMessage(
+      (message) => {
+        switch (message.command) {
+          case 'getYear': {
+            executeCommand('showYearlyHotListPannel');
+            break;
+          }
+          case 'getMonth': {
+            executeCommand('showMonthlyHotListPanel');
+            break;
+          }
+          case 'getDay': {
+            /** 测试环境用来测试一下 */
+            process.env.NODE_ENV === 'prod'
+              ? executeCommand('showDailyHotListPanel')
+              : executeCommand('test');
+            break;
+          }
+          case 'loadMore': {
+            this._loadMore();
+            break;
+          }
+          case 'details': {
+            executeCommand('getDetailsById', message.id);
+            break;
+          }
+          case 'search': {
+            executeCommand(
+              'searchVnsByQuery',
+              message.keyword,
+              message.sort,
+              message.reverse
+            );
+            break;
+          }
+          case 'showError': {
+            vscode.window.showErrorMessage(message.error);
+            break;
+          }
+        }
+      },
+      undefined,
+      context.subscriptions
+    );
+    return panel;
+  }
+
+  protected _htmlWrap = (content: string) => {
+    return `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link rel="stylesheet" href="${this._stylesUri}">
+          <script src="${this._scriptUri}" type="text/javascript"></script>
+          <script src="${this._uiToolkitUri}" type="module"></script>
+          <title>VNDB View Panel</title>
+        </head>
+        <body>
+          <div id="vsc-vndb-view-panel">
+            <div class="vn-header-btns">
+              <vscode-button onclick="getDailyVns()">Daily View</vscode-button>
+              <vscode-button onclick="getMonthlyVns()">Monthly View</vscode-button>
+              <vscode-button onclick="getYearlyVns()">Yearly View</vscode-button>
+            </div>
+            ${searchBar}
+            ${content}
+          </div>
+        </body>
+      </html>`;
+  };
 
   public reconnectDb() {
     vnQuery.reconnect();
@@ -321,4 +350,30 @@ export class VnListViewPanel extends ViewPanel {
       }
     });
   }
+}
+
+export class BgmViewPanel extends ViewPanel {
+  protected createWebviewPanel(onDidDispose: () => void) {
+    const context = getContext();
+    const panel = super.createWebviewPanel(onDidDispose);
+    panel.webview.onDidReceiveMessage(
+      (message) => {
+        switch (message.command) {
+          case 'getYear': {
+            executeCommand('showYearlyHotListPannel');
+            break;
+          }
+          case 'getMonth': {
+            executeCommand('showMonthlyHotListPanel');
+            break;
+          }
+        }
+      },
+      undefined,
+      context.subscriptions
+    );
+    return panel;
+  }
+
+  public get;
 }

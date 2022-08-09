@@ -1,7 +1,7 @@
 import express from 'express';
-import request, { APP_ID, APP_SECRET } from '../query/bgm/request';
-import Logger from '../utils/logger';
-import { saveState } from '../utils/context';
+import request, { APP_ID, APP_SECRET, Api } from '~/query/bgm/request';
+import Logger from '~/utils/logger';
+import { saveState, loadState } from '~/utils/context';
 
 const initService = () => {
   const app = express();
@@ -15,16 +15,18 @@ const initService = () => {
         redirect_uri: 'http://localhost:10721/oauth',
       });
       if (data.access_token) {
-        saveState('bgm_token', res.access_token);
-        saveState('bgm_refresh_token', res.refresh_token);
-        saveState('bgm_user_id', res.user_id);
+        saveState('bgm_token', data.access_token);
+        saveState('bgm_refresh_token', data.refresh_token);
+        saveState('bgm_user_id', data.user_id);
+        const user = await Api.get('/v0/me');
+        saveState('bgm_user', user);
         Logger.success('Auth Success!', data);
         res.send('success!');
         return;
       }
       res.send('ERROR:' + JSON.stringify(data));
     } catch (e) {
-      res.send('ERROR!' + e);
+      res.send('ERROR!<br>' + e + '<br>' + JSON.stringify(e));
     }
   });
 

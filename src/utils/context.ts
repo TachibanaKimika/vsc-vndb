@@ -23,6 +23,7 @@ export const getConfig = (k: string) => {
 
 export const saveState = (k: string, v: any) => {
   _context.globalState.update(k, v);
-}
+};
 
-export const loadState = (k: string) => _context.globalState.get(k);
+export const loadState: <T = any>(k: string) => T = (k: string) =>
+  _context.globalState.get(k);
