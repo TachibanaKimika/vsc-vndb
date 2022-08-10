@@ -72,18 +72,21 @@ export function activate(context: vscode.ExtensionContext) {
     panel.reconnectDb();
   };
 
-  const testExec = () => {
-    getMyCollection();
+  const openBangumiCollection = () => {
+    const panel: BgmViewPanel = getConfig('bgmViewPanel');
+    panel.renderMyCollection();
   };
 
+  /** vndb part */
   regisrtyCommand('showDailyHotListPanel', showDailyHotListPanel);
   regisrtyCommand('showMonthlyHotListPanel', showMonthlyHotListPanel);
   regisrtyCommand('showYearlyHotListPannel', showYearlyHotListPannel);
   regisrtyCommand('getDetailsById', getDetailsById);
   regisrtyCommand('searchVnsByQuery', searchVns);
-  regisrtyCommand('authBangumi', authBangumiExec);
   regisrtyCommand('reconnect', reconnect);
-  regisrtyCommand('test', testExec);
+  /** Bangumi part */
+  regisrtyCommand('authBangumi', authBangumiExec);
+  regisrtyCommand('openMyCollection', openBangumiCollection);
 }
 
 // this method is called when your extension is deactivated

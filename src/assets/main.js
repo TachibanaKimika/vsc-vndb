@@ -54,3 +54,15 @@ function searchVns() {
     reverse: !!reverse,
   });
 }
+
+function previousPage() {
+  vscode.postMessage({
+    command: 'previousPage',
+  });
+}
+
+function nextPage() {
+  vscode.postMessage({
+    command: 'nextPage',
+  });
+}

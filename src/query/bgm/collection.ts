@@ -4,9 +4,9 @@ import Logger from '~/utils/logger';
 import { UserState, ListRes, CollectionItem, SearchListRes } from './interface';
 
 export const getMyCollection = async (
-  pageSize = 20,
   pageNum = 1,
   /** 暂时只支持4 */
+  pageSize = 20,
   subject_type = 4
 ): Promise<ListRes<CollectionItem>> => {
   const user = loadState<UserState>('bgm_user');

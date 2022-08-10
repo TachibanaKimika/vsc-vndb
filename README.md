@@ -1,6 +1,6 @@
 # Vsc-Vndb
 
-> 可以在上班的时候偷偷看~~黄油最新消息~~的vscode插件, 背景简介清晰, 对vscode主题自适应, 观感良好, ~~隐蔽性良好~~.
+> 可以在上班的时候偷偷看~~黄油最新消息~~的 vscode 插件, 背景简介清晰, 对 vscode 主题自适应, 观感良好, ~~隐蔽性良好~~.
 
 ## Quick Start
 
@@ -8,8 +8,13 @@
 
 ![image](https://raw.githubusercontent.com/TachibanaKimika/vsc-vndb/master/images/main_panel.png)
 
-
 ## Release 🚀
+
+### 0.3.0
+
+- [x] 接入 Bangumi
+  - [x] 登录 => vscode command: authBangumi
+  - [x] 打开收藏面板 => vscode command: openMyCollection
 
 ### 0.2.0
 

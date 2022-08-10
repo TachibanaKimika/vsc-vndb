@@ -3,7 +3,7 @@
   "displayName": "Vndb in VS Code",
   "description": "View vndb in VS Code",
   "repository": "https://github.com/TachibanaKimika/vsc-vndb",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "publisher": "TachibanaKimika",
   "preview": false,
   "private": true,
@@ -27,6 +27,10 @@
       {
         "command": "vsc-vndb.authBangumi",
         "title": "Auth Bangumi"
+      },
+      {
+        "command": "vsc-vndb.openMyCollection",
+        "title": "Open My Collection In Bangumi"
       }
     ]
   },

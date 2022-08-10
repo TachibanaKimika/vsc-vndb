@@ -3,7 +3,7 @@ import { getVndb } from './instance';
 import dayjs from 'dayjs';
 import { VnsQueryRes, VnListItem, Vn, Character } from './interface';
 import { capitalizeFirstLetter } from '../utils/string';
-import { logger, loading } from '../utils/decorators';
+import { loading } from '../utils/decorators';
 import Logger from '../utils/logger';
 import { get, set } from 'lodash';
 
