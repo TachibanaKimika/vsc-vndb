@@ -372,6 +372,10 @@ export class BgmViewPanel extends ViewPanel {
             this.previousPage();
             break;
           }
+          case 'search': {
+            this.searchVns(message.keyword);
+            break;
+          }
         }
       },
       undefined,
@@ -393,8 +397,9 @@ export class BgmViewPanel extends ViewPanel {
         </head>
         <body>
           <div id="vsc-vndb-view-panel">
+            ${bgmComponent.searchBar('keyword')}
             <div class="vn-header-btns">
-              <vscode-button onclick="getDailyVns()">Daily View</vscode-button>
+              <vscode-button onclick="getDailyVns()">My Collection</vscode-button>
               <vscode-button onclick="getMonthlyVns()">Monthly View</vscode-button>
               <vscode-button onclick="getYearlyVns()">Yearly View</vscode-button>
             </div>
@@ -409,6 +414,16 @@ export class BgmViewPanel extends ViewPanel {
     const { data, total } = await bgmQuery.getMyCollection();
     this._state.newQuery('getMyCollection', total);
     const html = bgmComponent.renderSubjectList(data);
+    this.updateContent(html);
+  }
+
+  public async searchVns(kw: string) {
+    const { results: total, list: data } = await bgmQuery.searchSubject(kw);
+    this._state.newQuery('searchVns', total, kw);
+    const html = bgmComponent.renderList(
+      data,
+      bgmComponent.renderSmallSubjectItem
+    );
     this.updateContent(html);
   }
 

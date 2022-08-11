@@ -2,7 +2,7 @@ export const capitalizeFirstLetter = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-export const formatNumber = (n: number) => {
+export const formatNumber = (n: number | undefined | null) => {
   if (n < 1000) {
     return n.toString();
   } else {

@@ -13,7 +13,7 @@ export class StatusBar {
         vscode.StatusBarAlignment.Right
       );
     }
-    this._statusBar.command = 'vsc-vndb.showMonthlyHotListPanel';
+    this._statusBar.command = 'vsc-vndb.openMyCollection';
     this._statusBar.text = 'Loading...';
     this._statusBar.show();
     this.getDailyVn();

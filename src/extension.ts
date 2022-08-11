@@ -8,7 +8,8 @@ import { StatusBar } from './view/statusBar';
 import { SortType } from './query/query';
 import { VnListViewPanel, BgmViewPanel } from './view/webview';
 import { authBangumi } from './utils/bgm';
-import { getMyCollection } from './query/bgm';
+import { refreshToken } from '~/utils/auth';
+import Logger from '~/utils/logger';
 import initService from './service';
 
 let isInit = false;
@@ -26,6 +27,7 @@ const initialize = (context: vscode.ExtensionContext) => {
   setConfig('statusBar', statusBar);
   setConfig('vnListViewPanel', vnListViewPanel);
   setConfig('bgmViewPanel', bgmViewPanel);
+  refreshToken();
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -64,6 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
   };
 
   const authBangumiExec = () => {
+    Logger.success('start auth bangumi');
     authBangumi();
   };
 

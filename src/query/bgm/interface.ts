@@ -19,9 +19,25 @@ export interface ListRes<T> {
   data: T[];
 }
 
-export interface SearchListRes<T = Subject> {
+export interface SearchListRes<T = SubjectSmall> {
   results: number;
   list: T[];
+}
+
+export enum CollectionType {
+  wish = 1,
+  collect = 2,
+  do = 3,
+  on_hold = 4,
+  dropped = 5,
+}
+
+export enum SubjectType {
+  book = 1,
+  anime = 2,
+  music = 3,
+  game = 4,
+  real = 5,
 }
 
 export interface CollectionItem<T = Subject> {
@@ -34,7 +50,7 @@ export interface CollectionItem<T = Subject> {
   subject_type: number;
   updated_at: string;
   /** Collection Type */
-  type: number;
+  type: CollectionType;
   /** Taged By User */
   tags: string[];
 }
@@ -77,4 +93,32 @@ export interface CharacterItem {
   images?: ImageBase & { grid: string };
   relation: string;
   actors: PersonItem[];
+}
+
+export interface SubjectSmall {
+  id: number;
+  url: string;
+  /** only support 4 */
+  type: SubjectType;
+  name: string;
+  name_cn: string | null;
+  summary: string;
+  images?: ImageBase & { grid: string; common: string };
+  /** YYYY-MM-DD */
+  date: string;
+  rating?: {
+    total: number;
+    count: number;
+    score: number;
+  };
+  rank: number;
+  collection: SubjectCollection;
+}
+
+export interface SubjectCollection {
+  wish: number;
+  collect: number;
+  doing: string;
+  on_hold: string;
+  dropped: string;
 }

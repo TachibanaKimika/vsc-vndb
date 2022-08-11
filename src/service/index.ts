@@ -21,7 +21,7 @@ const initService = () => {
         const user = await Api.get('/v0/me');
         saveState('bgm_user', user);
         Logger.success('Auth Success!', data);
-        res.send('success!');
+        res.send('Auth Success!');
         return;
       }
       res.send('ERROR:' + JSON.stringify(data));

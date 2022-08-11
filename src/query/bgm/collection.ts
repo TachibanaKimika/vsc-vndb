@@ -28,7 +28,7 @@ export const searchSubject = async (
   responseGroup = 'medium',
   type = 4
 ): Promise<SearchListRes> => {
-  const data = await Api.get(`/search/subject/${keywords}`, {
+  const data = await Api.get(`/search/subject/${encodeURI(keywords)}`, {
     params: {
       start: offset,
       max_results: pageSize,

@@ -32,7 +32,7 @@ Api.interceptors.request.use((config) => {
     (config.headers['Authorization'] =
       'Bearer ' + loadState<string>('bgm_token'));
   config.headers['Accept'] = 'application/json';
-  config.headers['User-Agent'] = 'vsc-vndb/' + vscode.version;
+  config.headers['User-Agent'] = 'vsc-vndb/vscode/' + vscode.version;
   return config;
 });
 

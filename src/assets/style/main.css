@@ -183,3 +183,22 @@
 .details-main .details-character .character-description {
   margin-top: 8px;
 }
+
+/** Bangumi Status */
+.bgm-status-tag {
+  font-size: calc(var(--vscode-editor-font-size) - 2px);
+  font-weight: 350;
+  border: 1px solid var(--vscode-editor-foreground);
+  padding: 0 6px;
+  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bgm-vn-block .vn-title-block-title {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
