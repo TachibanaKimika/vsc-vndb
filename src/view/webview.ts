@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as path from '../path.json';
+import * as path from 'path';
 import { getContext } from '../utils/context';
 import { VnListItem } from '../query/interface';
 import { executeCommand } from '../utils/command';
@@ -20,23 +20,39 @@ export class ViewPanel {
   protected _scriptUri: vscode.Uri;
   protected _uiToolkitUri: vscode.Uri;
   protected _panel: vscode.WebviewPanel | undefined;
+  protected _extensionPath: string;
+  protected _hasInit = false;
 
   constructor() {
     this._extensionUri = getContext().extensionUri;
-    // this._stylesUri = vscode.Uri.joinPath(this._extensionUri, 'src', 'style', 'main.css');
-    this._stylesUri = vscode.Uri.joinPath(
-      this._extensionUri,
-      ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.css)
-    ).with({ scheme: 'vscode-resource' });
-    this._scriptUri = vscode.Uri.joinPath(
-      this._extensionUri,
-      ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.js)
-    ).with({ scheme: 'vscode-resource' });
-    this._uiToolkitUri = vscode.Uri.joinPath(
-      this._extensionUri,
-      ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.uiToolkit)
-    ).with({ scheme: 'vscode-resource' });
+    this._extensionPath = getContext().extensionPath;
+    this._stylesUri = vscode.Uri.file(
+      path.join(
+        this._extensionPath,
+        ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.css)
+      )
+    );
+    this._scriptUri = vscode.Uri.file(
+      path.join(
+        this._extensionPath,
+        ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.js)
+      )
+    );
+    this._uiToolkitUri = vscode.Uri.file(
+      path.join(
+        this._extensionPath,
+        ...NodeModulesAccessor.getPathToOutputFile(NodeModulesKeys.uiToolkit)
+      )
+    );
     this._content = '';
+  }
+
+  protected createResourcePath(uri: vscode.Uri, webview: vscode.Webview) {
+    if (!this._hasInit) {
+      return webview.asWebviewUri(uri);
+    } else {
+      return uri;
+    }
   }
 
   protected _loadMore() {}
@@ -50,9 +66,18 @@ export class ViewPanel {
       {
         enableScripts: true,
         retainContextWhenHidden: true,
-        localResourceRoots: [vscode.Uri.joinPath(context.extensionUri)],
+        
+        localResourceRoots: [
+          vscode.Uri.file(path.join(context.extensionPath, NodeModulesAccessor.outputPath, 'assets')),
+        ],
       }
     );
+    this._scriptUri = this.createResourcePath(this._scriptUri, panel.webview);
+    this._stylesUri = this.createResourcePath(this._stylesUri, panel.webview);
+    this._uiToolkitUri = this.createResourcePath(this._uiToolkitUri, panel.webview);
+    this._hasInit = true;
+    Logger.success('ACCESS', vscode.Uri.file(path.join(context.extensionPath, NodeModulesAccessor.outputPath, 'assets')))
+    Logger.success('success', this._uiToolkitUri)
     panel.onDidDispose(onDidDispose, null, context.subscriptions);
     return panel;
   }
@@ -76,8 +101,8 @@ export class ViewPanel {
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <link rel="stylesheet" href="${this._stylesUri}">
-          <script src="${this._scriptUri}" type="text/javascript"></script>
-          <script src="${this._uiToolkitUri}" type="module"></script>
+          <script src="${this._scriptUri}"></script>
+          <script src="${this._uiToolkitUri}"></script>
           <title>VNDB View Panel</title>
         </head>
         <body>
