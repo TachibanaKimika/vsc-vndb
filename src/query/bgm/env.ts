@@ -1,3 +1,0 @@
-export const APP_ID = 'bgm22626260425062c95';
-
-export const APP_SECRET = 'df34e774070723266783796f40d97195';

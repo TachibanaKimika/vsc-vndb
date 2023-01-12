@@ -8,7 +8,7 @@ const formatDescription = (desc: string | null) => {
   }
 
   // replace url
-  const [...matchedArray] = desc?.matchAll(/\[url=(.+?)\](.+?)\[\/url\]/gi);
+  const [...matchedArray] = desc.matchAll(/\[url=(.+?)\](.+?)\[\/url\]/gi);
   Logger.log('vndb match', matchedArray);
   if (matchedArray) {
     for (const [replace, url, text] of matchedArray) {

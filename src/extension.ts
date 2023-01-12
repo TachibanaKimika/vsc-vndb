@@ -6,10 +6,7 @@ import { regisrtyCommand } from './utils/command';
 import { setContext, setConfig, getConfig } from './utils/context';
 import { StatusBar } from './view/statusBar';
 import { SortType } from './query/query';
-import { VnListViewPanel, BgmViewPanel } from './view/webview';
-import { authBangumi } from './utils/bgm';
-import { getMyCollection } from './query/bgm';
-import initService from './service';
+import { VnListViewPanel } from './view/webview';
 
 let isInit = false;
 
@@ -18,14 +15,11 @@ const initialize = (context: vscode.ExtensionContext) => {
     return;
   }
   isInit = true;
-  initService();
   setContext(context);
   const vnListViewPanel = new VnListViewPanel();
-  const bgmViewPanel = new BgmViewPanel();
   const statusBar = new StatusBar();
   setConfig('statusBar', statusBar);
   setConfig('vnListViewPanel', vnListViewPanel);
-  setConfig('bgmViewPanel', bgmViewPanel);
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -63,18 +57,9 @@ export function activate(context: vscode.ExtensionContext) {
     });
   };
 
-  const authBangumiExec = () => {
-    authBangumi();
-  };
-
   const reconnect = () => {
     const panel: VnListViewPanel = getConfig('vnListViewPanel');
     panel.reconnectDb();
-  };
-
-  const openBangumiCollection = () => {
-    const panel: BgmViewPanel = getConfig('bgmViewPanel');
-    panel.renderMyCollection();
   };
 
   /** vndb part */
@@ -84,9 +69,6 @@ export function activate(context: vscode.ExtensionContext) {
   regisrtyCommand('getDetailsById', getDetailsById);
   regisrtyCommand('searchVnsByQuery', searchVns);
   regisrtyCommand('reconnect', reconnect);
-  /** Bangumi part */
-  regisrtyCommand('authBangumi', authBangumiExec);
-  regisrtyCommand('openMyCollection', openBangumiCollection);
 }
 
 // this method is called when your extension is deactivated

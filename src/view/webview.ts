@@ -6,11 +6,8 @@ import { executeCommand } from '../utils/command';
 import { vnQuery, SearchOption } from '../query/query';
 import { formatDetails, searchBar } from '../utils/formatHtml';
 import { NodeModulesAccessor, NodeModulesKeys } from '../NodeModulesAccessor';
-import * as bgmQuery from '~/query/bgm';
-import * as bgmComponent from '~/view/components/bangumi';
 import { formatNumber } from '../utils/string';
 import { initBgmPanelState } from './interface';
-import { ListRes, CollectionItem } from '~/query/bgm/interface';
 import Logger from '../utils/logger';
 
 export class ViewPanel {
@@ -66,18 +63,36 @@ export class ViewPanel {
       {
         enableScripts: true,
         retainContextWhenHidden: true,
-        
+
         localResourceRoots: [
-          vscode.Uri.file(path.join(context.extensionPath, NodeModulesAccessor.outputPath, 'assets')),
+          vscode.Uri.file(
+            path.join(
+              context.extensionPath,
+              NodeModulesAccessor.outputPath,
+              'assets'
+            )
+          ),
         ],
       }
     );
     this._scriptUri = this.createResourcePath(this._scriptUri, panel.webview);
     this._stylesUri = this.createResourcePath(this._stylesUri, panel.webview);
-    this._uiToolkitUri = this.createResourcePath(this._uiToolkitUri, panel.webview);
+    this._uiToolkitUri = this.createResourcePath(
+      this._uiToolkitUri,
+      panel.webview
+    );
     this._hasInit = true;
-    Logger.success('ACCESS', vscode.Uri.file(path.join(context.extensionPath, NodeModulesAccessor.outputPath, 'assets')))
-    Logger.success('success', this._uiToolkitUri)
+    Logger.success(
+      'ACCESS',
+      vscode.Uri.file(
+        path.join(
+          context.extensionPath,
+          NodeModulesAccessor.outputPath,
+          'assets'
+        )
+      )
+    );
+    Logger.success('success', this._uiToolkitUri);
     panel.onDidDispose(onDidDispose, null, context.subscriptions);
     return panel;
   }
@@ -378,90 +393,5 @@ export class VnListViewPanel extends ViewPanel {
         this.updateContent(this.vnDetailsWrap(contentHtml));
       }
     });
-  }
-}
-
-export class BgmViewPanel extends ViewPanel {
-  private _state = initBgmPanelState();
-  protected createWebviewPanel(onDidDispose: () => void) {
-    const context = getContext();
-    const panel = super.createWebviewPanel(onDidDispose);
-    panel.webview.onDidReceiveMessage(
-      (message) => {
-        switch (message.command) {
-          case 'nextPage': {
-            this.nextPage();
-            break;
-          }
-          case 'previousPage': {
-            this.previousPage();
-            break;
-          }
-        }
-      },
-      undefined,
-      context.subscriptions
-    );
-    return panel;
-  }
-
-  protected _htmlWrap = (content: string) => {
-    return `<!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="${this._stylesUri}">
-          <script src="${this._scriptUri}" type="text/javascript"></script>
-          <script src="${this._uiToolkitUri}" type="module"></script>
-          <title>VNDB View Panel</title>
-        </head>
-        <body>
-          <div id="vsc-vndb-view-panel">
-            <div class="vn-header-btns">
-              <vscode-button onclick="getDailyVns()">Daily View</vscode-button>
-              <vscode-button onclick="getMonthlyVns()">Monthly View</vscode-button>
-              <vscode-button onclick="getYearlyVns()">Yearly View</vscode-button>
-            </div>
-            ${content}
-          </div>
-          ${this._state.panelType && bgmComponent.pagination}
-        </body>
-      </html>`;
-  };
-
-  public async renderMyCollection() {
-    const { data, total } = await bgmQuery.getMyCollection();
-    this._state.newQuery('getMyCollection', total);
-    const html = bgmComponent.renderSubjectList(data);
-    this.updateContent(html);
-  }
-
-  public async nextPage() {
-    const state = this._state.nextPage();
-    if (!state) return;
-    this.changePage(state);
-  }
-
-  public async previousPage() {
-    const state = this._state.previousPage();
-    if (!state) return;
-    this.changePage(state);
-  }
-
-  public async changePage(state: {
-    query: string;
-    pageNum: number;
-    args: any[];
-  }) {
-    const { query, pageNum, args } = state;
-    if (typeof bgmQuery[query] === 'function') {
-      const { data }: ListRes<CollectionItem> = await bgmQuery?.[query]?.(
-        pageNum,
-        ...args
-      );
-      const html = bgmComponent.renderSubjectList(data);
-      this.updateContent(html);
-    }
   }
 }

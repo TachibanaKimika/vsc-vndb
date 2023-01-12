@@ -15,10 +15,12 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     'prettier/prettier': [
-      'error', {
+      'error',
+      {
         singleQuote: true,
-        'endOfLine': 'lf',
-      }],
+        endOfLine: 'auto',
+      },
+    ],
     '@typescript-eslint/semi': 'warn',
     curly: 'warn',
     eqeqeq: 'warn',
@@ -28,7 +30,7 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-this-alias': 'off',
-    'linebreak-style': 'unix',
+    'linebreak-style': 0,
   },
   ignorePatterns: ['out', 'dist', '**/*.d.ts'],
 };

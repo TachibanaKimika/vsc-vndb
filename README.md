@@ -10,17 +10,21 @@
 
 ## Release 🚀
 
-### 0.3.0
+### 0.4.x
+- [x] 删除 Bangumi相关的api(太麻烦不想做了)
+- [ ] 改用VNDB的HTTP API
+
+### 0.3.x
 
 - [x] 接入 Bangumi
   - [x] 登录 => vscode command: authBangumi
   - [x] 打开收藏面板 => vscode command: openMyCollection
 
-### 0.2.0
+### 0.2.x
 
 - [x] 支持对黄油进行搜索自定义排序
 
-### 0.1.0
+### 0.1.x
 
 #### Features
 
