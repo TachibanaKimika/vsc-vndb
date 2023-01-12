@@ -1,9 +1,9 @@
-import { VnItem } from '../query/interface';
 import * as vscode from 'vscode';
 import { vnQuery } from '../query/query';
+import { Vn } from 'vndb-api-kana';
 
 export class StatusBar {
-  private _dailyVn: VnItem | null = null;
+  private _dailyVn: Vn | null = null;
   private _statusBar: vscode.StatusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right
   );
@@ -30,9 +30,5 @@ export class StatusBar {
         this._statusBar.show();
       }
     });
-  }
-
-  public getDailyVnDetails() {
-    return this._dailyVn;
   }
 }

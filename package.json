@@ -3,7 +3,7 @@
   "displayName": "Vndb in VS Code",
   "description": "View vndb in VS Code",
   "repository": "https://github.com/TachibanaKimika/vsc-vndb",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "publisher": "TachibanaKimika",
   "preview": false,
   "private": true,
@@ -72,11 +72,11 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.2.2",
     "copy-webpack-plugin": "^11.0.0",
     "dayjs": "^1.11.3",
     "express": "^4.18.1",
     "lodash": "^4.17.21",
-    "vndb-api": "^1.0.3"
+    "vndb-api-kana": "^0.1.6"
   }
 }

@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
-import { getVndb } from './instance';
 import dayjs from 'dayjs';
-import { VnsQueryRes, VnListItem, Vn, Character } from './interface';
+import { VnsQueryRes, VnListItem } from './interface';
+import { Vn, VnField, Character, api } from 'vndb-api-kana';
 import { capitalizeFirstLetter } from '../utils/string';
 import { loading } from '../utils/decorators';
 import Logger from '../utils/logger';
+import axios from 'axios';
 import { get, set } from 'lodash';
-
-type IVndb = any;
 
 type ICache = {
   [key in EQueryType]: GetVnRes;
@@ -23,7 +22,7 @@ enum EQueryType {
 
 interface GetVnRes {
   /** VnListItem */
-  items: VnListItem[];
+  results: Vn[];
   /** now page num */
   page: number;
   /** db has more vns */
@@ -42,16 +41,39 @@ export interface SearchOption {
   reverse: boolean;
 }
 
+const usedVnListFields: VnField[] = [
+  'id',
+  'title',
+  'titles.official',
+  'titles.title',
+  'released',
+  'votecount',
+  'popularity',
+  'rating',
+];
+
+const vnDetailsFields: VnField[] = [
+  'id',
+  'title',
+  'titles.official',
+  'titles.title',
+  'description',
+  'aliases',
+  'released',
+  'length',
+  'popularity',
+  'rating',
+  'votecount',
+];
+
 class VnQuery {
-  /** VNDB Conn Instance */
-  private _vndb: IVndb;
   /** Query Cache */
   private _cache: ICache = {} as any;
   /** Qurey Type Now that has cache */
   private _type: keyof typeof EQueryType | string = 'monthly';
   private _isInQuery = false;
   constructor() {
-    this._vndb = getVndb();
+    // this._vndb = getVndb();
   }
 
   /**
@@ -64,7 +86,7 @@ class VnQuery {
   ): false | GetVnRes {
     if (!get(this._cache, type)) {
       set(this._cache, type, {
-        items: [],
+        results: [],
         page: 1,
         more: true,
       });
@@ -72,7 +94,7 @@ class VnQuery {
     } else {
       const cache = get(this._cache, type);
       if (
-        (cache?.page ?? 0) * 10 <= (cache?.items ?? []).length ||
+        (cache?.page ?? 0) * 10 <= (cache?.results ?? []).length ||
         !cache?.more
       ) {
         return cache;
@@ -91,11 +113,11 @@ class VnQuery {
    */
   private _cacheNewVns(
     type: keyof typeof EQueryType | string,
-    vns: VnListItem[],
+    vns: Vn[],
     more: boolean
   ): GetVnRes {
     set(this._cache, type, {
-      items: [...get(this._cache, type).items, ...vns],
+      results: [...get(this._cache, type).results, ...vns],
       page: get(this._cache, type).page,
       more,
     });
@@ -106,14 +128,30 @@ class VnQuery {
     let page = 1,
       more = true,
       character: Character[] = [];
-    const fetchData: (p: number) => Promise<VnsQueryRes<Character>> = (p) =>
-      this._vndb.query(
-        `get character basic,details,meas,traits,voiced,vns (vn=${vnId}) {"page":${p}}`
-      );
+    const fetchData = (p: number) => {
+      return api.getCharacter({
+        filters: ['vn', '=', ['id', '=', vnId]],
+        fields: [
+          'id',
+          'name',
+          'birthday',
+          'description',
+          'vns.role',
+          'weight',
+          'cup',
+          'height',
+          'bust',
+          'waist',
+          'hips',
+          'sex',
+        ],
+        page: p,
+      });
+    };
     while (more) {
       const res = await fetchData(page);
-      if (res.items.length > 0) {
-        character = [...character, ...res.items];
+      if (res.results.length > 0) {
+        character = [...character, ...res.results];
       }
       more = res.more;
       page++;
@@ -123,11 +161,13 @@ class VnQuery {
 
   @loading
   public async getDailyVn() {
-    const vnsRes: VnsQueryRes<VnListItem> = await this._vndb.query(`
-      get vn basic,stats (released="${dayjs().format('YYYY-MM-DD')}")
-    `);
-    if (vnsRes.num > 0) {
-      return vnsRes.items[0];
+    const vnRes = await api.getVn({
+      filters: ['released', '=', dayjs().format('YYYY-MM-DD')],
+      fields: usedVnListFields,
+      results: 1,
+    });
+    if (vnRes.count > 0) {
+      return vnRes.results[0];
     }
     return null;
   }
@@ -142,19 +182,16 @@ class VnQuery {
 
     // not hit cache
     const { page } = this._cache.daily;
-    const pageOption = {
+
+    const vnRes = await api.getVn({
+      filters: ['released', '=', dayjs().format('YYYY-MM-DD')],
+      fields: usedVnListFields,
       page,
+      count: true,
       sort: 'popularity',
-      reverse: true,
-    };
+    });
 
-    const vnsRes: VnsQueryRes<VnListItem> = await this._vndb.query(`
-      get vn basic,stats (released="${dayjs().format(
-        'YYYY-MM-DD'
-      )}") ${JSON.stringify(pageOption)}
-    `);
-
-    return this._cacheNewVns('daily', vnsRes.items ?? [], vnsRes.more ?? true);
+    return this._cacheNewVns('daily', vnRes.results ?? [], vnRes.more ?? true);
   }
 
   /**
@@ -171,24 +208,27 @@ class VnQuery {
 
     // not hit cache
     const { page } = this._cache.monthly;
-    const pageOption = {
+
+    const vnRes = await api.getVn({
+      filters: [
+        'and',
+        ['released', '<', `${dayjs().format('YYYY-MM-DD')}`],
+        [
+          'released',
+          '>',
+          `${dayjs().subtract(1, 'month').format('YYYY-MM-DD')}`,
+        ],
+      ],
+      fields: usedVnListFields,
       page,
       sort: 'popularity',
       reverse: true,
-    };
-
-    const vnsRes: VnsQueryRes<VnListItem> = await this._vndb.query(`
-      get vn basic,stats (released>="${dayjs().format(
-        'YYYY-MM'
-      )}-01" and released<"${dayjs()
-      .subtract(-1, 'month')
-      .format('YYYY-MM')}-01") ${JSON.stringify(pageOption)}
-    `);
+    });
 
     return this._cacheNewVns(
       'monthly',
-      vnsRes.items ?? [],
-      vnsRes.more ?? true
+      vnRes.results ?? [],
+      vnRes.more ?? true
     );
   }
 
@@ -206,38 +246,49 @@ class VnQuery {
 
     // not hit cache
     const { page } = this._cache.yearly;
-    const pageOption = {
+
+    const vnsRes = await api.getVn({
+      filters: [
+        'and',
+        ['released', '<', `${dayjs().format('YYYY-MM-DD')}`],
+        [
+          'released',
+          '>',
+          `${dayjs().subtract(1, 'year').format('YYYY-MM-DD')}`,
+        ],
+      ],
+      fields: usedVnListFields,
       page,
       sort: 'popularity',
       reverse: true,
-    };
+    });
 
-    const vnsRes: VnsQueryRes<VnListItem> = await this._vndb.query(`
-      get vn basic,stats (released>="${dayjs().format(
-        'YYYY'
-      )}-01-01" and released<"${dayjs()
-      .subtract(-1, 'year')
-      .format('YYYY')}-01-01") ${JSON.stringify(pageOption)}
-    `);
-
-    return this._cacheNewVns('yearly', vnsRes.items ?? [], vnsRes.more ?? true);
+    return this._cacheNewVns(
+      'yearly',
+      vnsRes.results ?? [],
+      vnsRes.more ?? true
+    );
   }
 
   /**
    * @param id
+   * TODO: Type => Vn & { characters: Character[] }
    */
   @loading
   public async getVnDetails(
     id: string
   ): Promise<(Vn & { characters: Character[] }) | null> {
-    const vnRes: VnsQueryRes<Vn> = await this._vndb.query(
-      `get vn basic,details,stats (id=${id})`
-    );
+    const vnRes = await api.getVn({
+      filters: ['id', '=', id],
+      fields: vnDetailsFields,
+    });
 
-    if (vnRes) {
+    Logger.success('Details', vnRes);
+
+    if (vnRes.results.length > 0) {
       const characters = await this._getCharacterByVnId(id);
       return {
-        ...vnRes.items[0],
+        ...vnRes.results?.[0],
         characters,
       };
     } else {
@@ -260,13 +311,15 @@ class VnQuery {
     };
 
     Logger.log('vndb search TYPE && CACHE', this._type, this._cache);
-    const vnsRes: VnsQueryRes<VnListItem> = await this._vndb.query(
-      `get vn basic,stats (search~"${keyword}") ${JSON.stringify(options)}`
-    );
+    const vnsRes = await api.getVn({
+      filters: ['search', '=', keyword],
+      fields: usedVnListFields,
+      ...options,
+    });
     if (vnsRes) {
       return this._cacheNewVns(
         cachePath,
-        vnsRes.items ?? [],
+        vnsRes.results ?? [],
         vnsRes.more ?? true
       );
     } else {
@@ -309,16 +362,9 @@ class VnQuery {
     }
   }
 
-  public async reconnect() {
-    this._isInQuery = false;
-    if (!this._vndb) {
-      this._vndb = getVndb();
-    }
-  }
-
   public destroy() {
     this._isInQuery = false;
-    this._vndb.destroy();
+    // this._vndb.destroy();
   }
 }
 

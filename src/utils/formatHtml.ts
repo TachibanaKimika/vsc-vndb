@@ -1,4 +1,4 @@
-import { Vn, Character } from '../query/interface';
+import { Vn, Character } from 'vndb-api-kana';
 import Logger from './logger';
 import * as Icon from './icons';
 
@@ -24,10 +24,14 @@ const formatDescription = (desc: string | null) => {
   }
 
   return desc
-    ? desc.replace(
-        /\[spoiler](.+?)\[\/spoiler\]/gi,
-        '<span class="vndb-spoiler">$1</span>'
-      )
+    ? desc
+        .replace(
+          /\[spoiler](.+?)\[\/spoiler\]/gi,
+          '<span class="vndb-spoiler">$1</span>'
+        )
+        .replace(/\[b](.+?)\[\/b\]/gi, '<b>$1</b>')
+        .replace(/\[i](.+?)\[\/i\]/gi, '<i>$1</i>')
+        .replace(/\[u](.+?)\[\/u\]/gi, '<u>$1</u>')
     : 'no description';
 };
 
@@ -48,13 +52,14 @@ const lv = (k: string, v: string | number | null): string => {
 };
 
 export const formatDetails = (vn: Vn & { characters: Character[] }): string => {
+  const originalTitle = vn.titles.find(({ official }) => official)?.title;
   const titleBlock = `<div class="details-title">${vn.title}</div>`;
   const originalBlock = `<div class="details-original">
-    ${vn.original ?? ''}</div>`;
+    ${originalTitle ?? ''}</div>`;
   const releasedBlock = `<div class="details-released">
     ${lv('released', vn.released)}</div>`;
   const aliasBlock = `<div>
-    ${lv('alias', formatAliases(vn.aliases))}</div>`;
+    ${lv('alias', vn.aliases?.join(', '))}</div>`;
   const descriptionBlock = `<div class="details-description">
     ${lv(`description`, vn.description)}
     </div>`;
@@ -96,14 +101,14 @@ export const formatCharacter = (c: Character): string => {
   const characterMeansBlock =
     ((c.bust &&
       c.waist &&
-      c.hip &&
+      c.hips &&
       `<div class="character-means">
-        ${lv('Means', `B${c.bust}/W${c.waist}/H${c.hip}`)}
+        ${lv('Means', `B${c.bust}/W${c.waist}/H${c.hips}`)}
       </div>`) ||
       '') +
-    (c.cup_size
+    (c.cup
       ? `<div class="character-cup-size">
-        ${lv('Cup Size', c.cup_size)}</div>`
+        ${lv('Cup Size', c.cup)}</div>`
       : '') +
     (c.height
       ? `<div class="character-height">
@@ -114,21 +119,24 @@ export const formatCharacter = (c: Character): string => {
         ${lv('Weight', c.weight)}</div>`
       : '');
 
-  const characterBirthdayBlock = c.birthday[0]
+  const characterBirthdayBlock = c.birthday?.[0]
     ? `<div class="character-birthday">
-    ${lv('Birthday', `${c.birthday[1]}-${c.birthday[0]}`)}
+    ${lv('Birthday', `${c.birthday?.[0]}-${c.birthday?.[1]}`)}
   </div>`
     : '';
   return `<div class="details-character">
     <div class="character-name">
-      ${c.original || c.name}
+      ${c.original ?? c.name}
       ${
-        c.gender &&
-        `<span class="character-gender-icon">${genderIcon[c.gender]}</span>`
+        c.sex
+          ? `<span class="character-gender-icon">${
+              genderIcon[typeof c.sex === 'string' ? c.sex : c.sex[0]]
+            }</span>`
+          : ''
       }
       ${
-        c?.vns[0]?.[3] &&
-        `<span class="character-role-tag">${c.vns[0]?.[3]?.toUpperCase()}</span>`
+        c?.vns[0]?.role &&
+        `<span class="character-role-tag">${c.vns[0]?.role.toUpperCase()}</span>`
       }
     </div>
     <vscode-divider></vscode-divider>

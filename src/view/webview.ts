@@ -7,7 +7,7 @@ import { vnQuery, SearchOption } from '../query/query';
 import { formatDetails, searchBar } from '../utils/formatHtml';
 import { NodeModulesAccessor, NodeModulesKeys } from '../NodeModulesAccessor';
 import { formatNumber } from '../utils/string';
-import { initBgmPanelState } from './interface';
+import { Vn } from 'vndb-api-kana';
 import Logger from '../utils/logger';
 
 export class ViewPanel {
@@ -155,13 +155,12 @@ export class ViewPanel {
 }
 
 export class VnListViewPanel extends ViewPanel {
-  private _vns: VnListItem[] = [];
+  private _vns: Vn[] = [];
   private _query: any;
   private _hasMore: string | null = null;
   // private scence: string;
 
   protected createWebviewPanel(onDidDispose: () => void) {
-    vnQuery.reconnect();
     const context = getContext();
     const panel = super.createWebviewPanel(onDidDispose);
     panel.webview.onDidReceiveMessage(
@@ -176,10 +175,7 @@ export class VnListViewPanel extends ViewPanel {
             break;
           }
           case 'getDay': {
-            /** 测试环境用来测试一下 */
-            process.env.NODE_ENV === 'prod'
-              ? executeCommand('showDailyHotListPanel')
-              : executeCommand('test');
+            executeCommand('showDailyHotListPanel');
             break;
           }
           case 'loadMore': {
@@ -187,6 +183,7 @@ export class VnListViewPanel extends ViewPanel {
             break;
           }
           case 'details': {
+            Logger.error('details', message);
             executeCommand('getDetailsById', message.id);
             break;
           }
@@ -236,11 +233,7 @@ export class VnListViewPanel extends ViewPanel {
       </html>`;
   };
 
-  public reconnectDb() {
-    vnQuery.reconnect();
-  }
-
-  private async _renderVns(vns: VnListItem[], more = false) {
+  private async _renderVns(vns: Vn[], more = false) {
     this._vns = vns;
     const vnBlock = this.formatVnList(this._vns);
     this.updateContent(this.vnBlockWrap(vnBlock, more));
@@ -268,16 +261,21 @@ export class VnListViewPanel extends ViewPanel {
     </div>
   `;
 
-  private formatVnList(vns: VnListItem[]) {
+  private formatVnList(vns: Vn[]) {
     const vnBlock = vns.map((vn) => {
+      const originalTitle = vn.titles.find(({ official, title }) => {
+        if (official) {
+          return true;
+        }
+      })?.title;
       return `
       <div class="vn-block">
         <div class="vn-title-block">
           <div class="vn-title-block-title" title="${vn.title}">
             ${vn.title}
           </div>
-          <div class="vn-title-block-original" title="${vn.original || ''}">
-            ${vn.original || 'no original'}
+          <div class="vn-title-block-original" title="${originalTitle || ''}">
+            ${originalTitle || 'no original'}
           </div>
         </div>
         <div class="vn-list-details">
@@ -297,7 +295,7 @@ export class VnListViewPanel extends ViewPanel {
             <vscode-button 
               class="btn" 
               appearance="icon" 
-              onclick="fetchDetails(${vn.id})"
+              onclick='fetchDetails("${vn.id}")'
             >details</vscode-button>
           </div>
         </div>
@@ -310,9 +308,9 @@ export class VnListViewPanel extends ViewPanel {
     this.showLoadingPanel();
     vnQuery
       .getDailyVns()
-      .then(({ items, more }) => {
-        if (items) {
-          this._renderVns(items, more);
+      .then(({ results, more }) => {
+        if (results) {
+          this._renderVns(results, more);
         }
       })
       .catch((err) => {
@@ -325,9 +323,9 @@ export class VnListViewPanel extends ViewPanel {
     this.showLoadingPanel();
     vnQuery
       .getMonthlyVns()
-      .then(({ items, more }) => {
-        if (items) {
-          this._renderVns(items, more);
+      .then(({ results, more }) => {
+        if (results) {
+          this._renderVns(results, more);
         }
       })
       .catch((err) => {
@@ -340,9 +338,9 @@ export class VnListViewPanel extends ViewPanel {
     this.showLoadingPanel();
     vnQuery
       .getYearlyVns()
-      .then(({ items, more }) => {
-        if (items) {
-          this._renderVns(items, more);
+      .then(({ results, more }) => {
+        if (results) {
+          this._renderVns(results, more);
         }
       })
       .catch((err) => {
@@ -362,8 +360,8 @@ export class VnListViewPanel extends ViewPanel {
       if (!res) {
         return;
       }
-      const { items, more } = res;
-      this._renderVns(items, more);
+      const { results, more } = res;
+      this._renderVns(results, more);
     });
   }
 
@@ -371,9 +369,9 @@ export class VnListViewPanel extends ViewPanel {
     this.showLoadingPanel();
     vnQuery
       .searchVns(keyword, option)
-      .then(({ items, more }) => {
-        if (items) {
-          this._renderVns(items, more);
+      .then(({ results, more }) => {
+        if (results) {
+          this._renderVns(results, more);
         }
       })
       .catch((err) => {

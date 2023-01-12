@@ -3,7 +3,7 @@ export interface VnsQueryRes<T> {
   num: number;
   status: string;
   searchType: string;
-  items: Array<T>;
+  results: Array<T>;
 }
 
 export type VnItem = VnBasic | VnDetails | VnStats;
