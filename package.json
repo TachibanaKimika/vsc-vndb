@@ -3,7 +3,7 @@
   "displayName": "Vndb in VS Code",
   "description": "View vndb in VS Code",
   "repository": "https://github.com/TachibanaKimika/vsc-vndb",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "publisher": "TachibanaKimika",
   "preview": false,
   "private": true,

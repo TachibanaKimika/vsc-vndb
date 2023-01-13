@@ -312,7 +312,7 @@ class VnQuery {
 
     Logger.log('vndb search TYPE && CACHE', this._type, this._cache);
     const vnsRes = await api.getVn({
-      filters: ['search', '=', keyword],
+      filters: keyword ? ['search', '=', keyword] : undefined,
       fields: usedVnListFields,
       ...options,
     });
