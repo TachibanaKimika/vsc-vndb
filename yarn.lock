@@ -2975,10 +2975,10 @@ vary@~1.1.2:
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vndb-api-kana@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.npmjs.org/vndb-api-kana/-/vndb-api-kana-0.1.6.tgz#1003f7f5a83c76d07f8d043280e5f6b114de2f9b"
-  integrity sha512-GzSJal8ziQWa2TGwcr2/NmggfXH2+E68U+DA4s6RLSzokxK/KoGc8Jx5Qq++fDWBzfUiygSRzqKXSYcVfeo2aw==
+vndb-api-kana@0.1.7:
+  version "0.1.7"
+  resolved "https://registry.npmjs.org/vndb-api-kana/-/vndb-api-kana-0.1.7.tgz#4ffd706584ed3ee7c1bceaa14b1134221a199fd8"
+  integrity sha512-zJir8277RQ7LR8H502bf35QiVwX/xMXXsHIOTOAQG3A1tziaqQxPGa0aItHLJRN8aVl/sSMKiJG6Cv4qzd1jvQ==
 
 watchpack@^2.4.0:
   version "2.4.0"
