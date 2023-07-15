@@ -263,7 +263,7 @@ export class VnListViewPanel extends ViewPanel {
 
   private formatVnList(vns: Vn[]) {
     const vnBlock = vns.map((vn) => {
-      const originalTitle = vn.titles.find(({ official, title }) => {
+      const originalTitle = vn.titles.find(({ official }) => {
         if (official) {
           return true;
         }
@@ -280,7 +280,7 @@ export class VnListViewPanel extends ViewPanel {
         </div>
         <div class="vn-list-details">
           <div class="vn-list-details-popularity">
-            Popular: ${vn.popularity}
+            Popular: ${vn.popularity.toFixed?.(2) ?? vn.popularity}
           </div>
           <div class="vn-list-details-rating">
             Rating: ${vn.rating}
